@@ -835,3 +835,15 @@ class Account:
         """ Save cookies to file """
         cookies = self.session.cookies
         Path(f'{fname or cookies.get("username")}.cookies').write_bytes(orjson.dumps(dict(cookies)))
+
+    def retweet(self, tweet_id: str) -> dict:
+        variables = {
+            "tweet_id": tweet_id,
+            "dark_request": False
+        }
+        headers = get_headers(self.session)
+        url = f'{self.gql_api}/ojPdsZsimiJrUGLR1sjUtA/CreateRetweet'
+        r = self.session.post(url, headers=headers, json={"variables": variables, "queryId": "ojPdsZsimiJrUGLR1sjUtA"})
+        if self.debug:
+            log(self.logger, self.debug, r)
+        return r.json()
